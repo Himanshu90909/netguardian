@@ -14,9 +14,9 @@ export function sql() {
 }
 
 export async function query<T = any>(q: string, params: any[] = []): Promise<T[]> {
-  const s = sql();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rows = (await (s as any)(q, params)) as any[];
+  const s = sql() as any;
+  const fn = typeof s.query === "function" ? s.query.bind(s) : s;
+  const rows = (await fn(q, params)) as any[];
   return rows as T[];
 }
 
@@ -28,8 +28,9 @@ export function ensureSchema(): Promise<void> {
 }
 
 async function bootstrap() {
-  const s = sql();
-  const run = (q: string) => (s as unknown as (q: string, p?: any[]) => Promise<any>)(q, []);
+  const s = sql() as any;
+  const fn = typeof s.query === "function" ? s.query.bind(s) : s;
+  const run = (q: string) => fn(q, []);
   await run(`CREATE SCHEMA IF NOT EXISTS ${SCHEMA}`);
   const t = (name: string) => `${SCHEMA}.${name}`;
   await run(`CREATE TABLE IF NOT EXISTS ${t("users")} (
