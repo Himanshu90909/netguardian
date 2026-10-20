@@ -3,7 +3,7 @@ import { query } from "./db";
 import { deviceBaseline, generateMetric } from "./network";
 
 function rndMac(i: number) {
-  const h = (n: number) => n.toString(16).padStart(2, "0").toUpperCase();
+  const h = (n: number) => (n % 256).toString(16).padStart(2, "0").toUpperCase();
   return `00:1B:44:${h(16 + i)}:${h(64 + i * 7)}:${h(17 + i * 13)}`;
 }
 
