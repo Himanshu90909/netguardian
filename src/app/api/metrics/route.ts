@@ -23,8 +23,9 @@ export const GET = handler(async (req) => {
   // Per-hour aggregation across devices
   const byTime = new Map<string, any>();
   for (const r of rows) {
-    const key = r.timestamp.slice(0, 13);
-    if (!byTime.has(key)) byTime.set(key, { t: r.t, ts: r.timestamp, n: 0, latency: 0, loss: 0, bw: 0, cpu: 0, mem: 0, up: 0, down: 0, upl: 0, dnl: 0 });
+    const ts = typeof r.timestamp === "string" ? r.timestamp : new Date(r.timestamp).toISOString();
+    const key = ts.slice(0, 13);
+    if (!byTime.has(key)) byTime.set(key, { t: r.t, ts, n: 0, latency: 0, loss: 0, bw: 0, cpu: 0, mem: 0, up: 0, down: 0, upl: 0, dnl: 0 });
     const a = byTime.get(key);
     a.n++; a.latency += r.latency_ms ?? 0; a.loss += r.packet_loss ?? 0; a.bw += r.bandwidth_mbps ?? 0;
     a.cpu += r.cpu_usage ?? 0; a.mem += r.memory_usage ?? 0; a.upl += r.upload_mbps ?? 0; a.dnl += r.download_mbps ?? 0;
