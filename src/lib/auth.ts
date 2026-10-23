@@ -15,9 +15,18 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) return null;
         await ensureSchema();
-        const rows = await query(
-          `SELECT * FROM netguardian.users WHERE email = $1`, [credentials.email.toLowerCase().trim()]
+        const ident = credentials.email.toLowerCase().trim();
+        let rows = await query(
+          `SELECT * FROM netguardian.users WHERE email = $1`, [ident]
         );
+        if (!rows.length) {
+          // Tolerate browser-autofill pollution: Chrome sometimes prepends the saved
+          // display name to the email ("Himanshu Suthar" + "user@x.com"). If the identifier
+          // ENDS with a registered email, accept that account.
+          rows = await query(
+            `SELECT * FROM netguardian.users WHERE $1 LIKE '%' || email ORDER BY length(email) DESC LIMIT 1`, [ident]
+          );
+        }
         const user = rows[0];
         if (!user) return null;
         if (!user.password_hash) return null; // OAuth-only account

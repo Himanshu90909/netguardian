@@ -15,8 +15,12 @@ export default function Register() {
     e.preventDefault();
     setBusy(true); setError("");
     try {
-      await post("/register", { name, email, password });
-      const res = await signIn("credentials", { email, password, redirect: false });
+      // Chrome autofill can prepend the saved display name to the email — extract the email token.
+      const matches = email.trim().match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi);
+      const cleanEmail = matches ? matches[matches.length - 1] : email.trim();
+      await post("/register", { name, email: cleanEmail, password });
+      setEmail(cleanEmail);
+      const res = await signIn("credentials", { email: cleanEmail, password, redirect: false });
       if (res?.error) setError("Account created — please sign in.");
       else window.location.href = "/dashboard";
     } catch (err: any) { setError(err.message); }
@@ -31,7 +35,7 @@ export default function Register() {
           <h1 className="text-xl font-bold mt-2 tracking-wide">Create your account</h1>
           <p className="text-xs text-slate-500">NetGuardian NOC platform</p>
         </div>
-        <form onSubmit={submit} className="panel p-5 space-y-3">
+        <form onSubmit={submit} noValidate className="panel p-5 space-y-3">
           <label className="block text-xs text-slate-400">Full name
             <input required name="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="input mt-1" placeholder="Himanshu Suthar" />
           </label>

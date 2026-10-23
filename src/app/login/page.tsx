@@ -10,10 +10,18 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const hasGoogle = process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "1";
 
+  // Chrome autofill can prepend the saved display name to the email
+  // ("Himanshu Sutharuser@x.com"). Extract the email-shaped token.
+  function cleanEmail(v: string) {
+    const matches = v.trim().match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi);
+    return matches ? matches[matches.length - 1] : v.trim();
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setError("");
-    const res = await signIn("credentials", { email, password, redirect: false });
+    if (!/.+@.+\..+/.test(cleanEmail(email)) || !password) { setError("Enter a valid email and password."); setBusy(false); return; }
+    const res = await signIn("credentials", { email: cleanEmail(email), password, redirect: false });
     setBusy(false);
     if (res?.error) setError("Invalid email or password.");
     else window.location.href = "/dashboard";
@@ -27,7 +35,7 @@ export default function Login() {
           <h1 className="text-xl font-bold mt-2 tracking-wide">NETGUARDIAN</h1>
           <p className="text-xs text-slate-500">Intelligent Network Monitoring & Security Platform</p>
         </div>
-        <form onSubmit={submit} className="panel p-5 space-y-3">
+        <form onSubmit={submit} noValidate className="panel p-5 space-y-3">
           <label className="block text-xs text-slate-400">Email
             <input type="email" required name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input mt-1" placeholder="you@example.com" />
           </label>
