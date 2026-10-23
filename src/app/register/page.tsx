@@ -33,13 +33,13 @@ export default function Register() {
         </div>
         <form onSubmit={submit} className="panel p-5 space-y-3">
           <label className="block text-xs text-slate-400">Full name
-            <input required value={name} onChange={(e) => setName(e.target.value)} className="input mt-1" placeholder="Himanshu Suthar" />
+            <input required name="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="input mt-1" placeholder="Himanshu Suthar" />
           </label>
           <label className="block text-xs text-slate-400">Email
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="input mt-1" placeholder="you@example.com" />
+            <input type="email" required name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input mt-1" placeholder="you@example.com" />
           </label>
           <label className="block text-xs text-slate-400">Password (min 6 chars)
-            <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="input mt-1" placeholder="••••••••" />
+            <input type="password" required minLength={6} name="new-password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="input mt-1" placeholder="••••••••" />
           </label>
           {error && <p className="text-xs text-red-400">{error}</p>}
           <button disabled={busy} className="btn-solid w-full">{busy ? "Creating…" : "Create account"}</button>

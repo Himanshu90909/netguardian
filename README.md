@@ -3,7 +3,7 @@
 Enterprise-style NOC dashboard for designing, monitoring and securing computer networks.
 Built for the LPU Computer Networks semester project (viva + portfolio ready).
 
-**Live:** https://netguardian-lpu.vercel.app
+**Live:** https://netguardian-psi.vercel.app
 
 ## Features
 - Real authentication (email/password + optional Google OAuth), per-user data isolation

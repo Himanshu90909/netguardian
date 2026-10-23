@@ -29,10 +29,10 @@ export default function Login() {
         </div>
         <form onSubmit={submit} className="panel p-5 space-y-3">
           <label className="block text-xs text-slate-400">Email
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="input mt-1" placeholder="you@example.com" />
+            <input type="email" required name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input mt-1" placeholder="you@example.com" />
           </label>
           <label className="block text-xs text-slate-400">Password
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="input mt-1" placeholder="••••••••" />
+            <input type="password" required name="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className="input mt-1" placeholder="••••••••" />
           </label>
           {error && <p className="text-xs text-red-400">{error}</p>}
           <button disabled={busy} className="btn-solid w-full">{busy ? "Signing in…" : "Sign in"}</button>
